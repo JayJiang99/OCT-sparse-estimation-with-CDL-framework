@@ -40,21 +40,25 @@ if __name__ == '__main__':
     )
 
     # s, D,path = load_data('finger', decimation_factor=20)
-    file_name = ['nail']
+    file_name = ['partial_LK2_50']
     for i in range(len(file_name)):
-        decimation_factor = 20
-        s = processing.load_data(file_name[i], decimation_factor=decimation_factor, data_only= True)
+        decimation_factor = 40
+        s = processing.load_data(file_name[i], decimation_factor=1, data_only= True)
+        print(file_name[i])
         l2f, snorm = processing.to_l2_normed(s)
 
         K = snorm.shape[1]  # number of A-line signal
         N = snorm.shape[0]  # length of A-line signgal
         M = 1  # state of dictionary
+        print(K)
+        print(N)
 
         # randomly select one A-line as the dictionary
         # dic_index = np.random.choice(s.shape[1],1)
         dic_index = int(6500/decimation_factor)  # fixed here for repeatability and reproducibility
         # l2 normalize the dictionary
         D = snorm[:, dic_index]
+        print(dic_index)
 
         # convert to sporco standard layabout
         D = np.reshape(D, (-1, 1, M))
@@ -101,8 +105,8 @@ if __name__ == '__main__':
         d = dictlrn.DictLearn(xstep, dstep, opt)
         D1 = d.solve().squeeze()
 
-        shift = np.argmax(abs(D1)) - np.argmax(abs(D0))
-        D1 = np.roll(D1, -shift)
+        # shift = np.argmax(abs(D1)) - np.argmax(abs(D0))
+        # D1 = np.roll(D1, -shift)
         #
         D = D.squeeze()
 
@@ -150,9 +154,9 @@ if __name__ == '__main__':
 
         D_PATH = '../Data/PSF/' + file_name[i]
 
-        # with open(D_PATH,'wb') as f:
-        #     pickle.dump(D1,f)
-        #     f.close()
+        with open(D_PATH,'wb') as f:
+            pickle.dump(D1,f)
+            f.close()
         #
 
 

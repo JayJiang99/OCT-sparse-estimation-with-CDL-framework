@@ -90,7 +90,9 @@ def load_data(dataset_name, decimation_factor, data_only=False):
             # (2) remove background noise: minus the frame mean
             s = s - np.mean(s, axis=1)[:, np.newaxis]
             # (3) sample every decimation_factor line,
+            print(np.shape(s))
             s = s[:, ::decimation_factor]
+            
             return (s, D)
         else:
             raise Exception("Dataset %s not found" % dataset_name)
@@ -99,6 +101,7 @@ def load_data(dataset_name, decimation_factor, data_only=False):
             # load data & dictionary
             with open(S_PATH, 'rb') as f:
                 s = pickle.load(f).T
+                print(np.shape(s))
                 f.close()
             # (2) remove background noise: minus the frame mean
             s = s - np.mean(s, axis=1)[:, np.newaxis]
