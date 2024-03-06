@@ -129,9 +129,9 @@ if __name__ == '__main__':
             'mathtext.fontset': 'stix',
         }
     )
-    file_name = ['partial_LK2_xz']
+    file_name = ['ear']
     # Load the example dataset
-    s, D = processing.load_data(file_name[0], decimation_factor=1)
+    s, D = processing.load_data(file_name[0], decimation_factor=20)
 
     rvmin, vmax = 5, 55 #dB
 
