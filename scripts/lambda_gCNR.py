@@ -253,9 +253,9 @@ if __name__ == '__main__':
             'mathtext.fontset': 'stix',
         }
     )
-    file_name = 'finger'
+    file_name = 'partial_LK2_006'
     # Load the example dataset
-    s, D = processing.load_data(file_name, decimation_factor=20)
+    s, D = processing.load_data(file_name, decimation_factor=1)
     lmbda = np.logspace(-4, 0, 50)
 
     value = []

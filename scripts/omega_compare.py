@@ -33,9 +33,9 @@ if __name__ == '__main__':
             'mathtext.fontset': 'stix',
         }
     )
-    file_name = ['ear']
+    file_name = ['partial_LK2_006']
     # Load the example dataset
-    s, D = processing.load_data(file_name[0], decimation_factor=20)
+    s, D = processing.load_data(file_name[0], decimation_factor=1)
 
     rvmin, vmax = 5, 55 #dB
 
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     lmbda = 0.05
     w_lmbda = 0.05
 
-    index = 400 # index A-line
+    index = 100 # index A-line
     s_line = abs(snorm[:,index])
 
     x_line = np.zeros((snorm.shape[0], len(speckle_weight)))

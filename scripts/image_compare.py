@@ -34,7 +34,7 @@ if __name__ == '__main__':
         }
     )
 
-    file_name = ['ear', 'finger', 'nail', 'onion']
+    file_name = ['partial_LK2_006', 'partial_LK2_006', 'partial_LK2_006', 'partial_LK2_006']
     title_name = [r'(a) middle ear', r'(b) index finger (palmar view)', r'(c) index finger (side view)', r'(d) onion slice']
 
     original = []
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     for i in range(len(file_name)):
         Ear = False
         # Load the example dataset
-        s, D = processing.load_data(file_name[i], decimation_factor=20)
+        s, D = processing.load_data(file_name[i], decimation_factor=1)
         # l2 norm data and save the scaling factor
         l2f, snorm = processing.to_l2_normed(s)
 

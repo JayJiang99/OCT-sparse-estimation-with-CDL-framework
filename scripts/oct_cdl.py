@@ -40,10 +40,10 @@ if __name__ == '__main__':
     )
 
     # s, D,path = load_data('finger', decimation_factor=20)
-    file_name = ['partial_LK2_50']
+    file_name = ['nail']
     for i in range(len(file_name)):
-        decimation_factor = 40
-        s = processing.load_data(file_name[i], decimation_factor=1, data_only= True)
+        decimation_factor = 20
+        s = processing.load_data(file_name[i], decimation_factor=decimation_factor, data_only= True)
         print(file_name[i])
         l2f, snorm = processing.to_l2_normed(s)
 
