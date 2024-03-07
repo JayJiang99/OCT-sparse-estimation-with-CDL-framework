@@ -167,14 +167,14 @@ class OCTReconstruction:
             PHI[i, :] = sc_flat
             # print("sc_flat", np.shape(sc_flat))
     
-            sc_fwht = dct(sc_flat,norm='ortho')
+            sc_fwht = sc_flat
             PHIPSI[i, :] = sc_fwht * N_full_sample
         if w_weight is not None:
             local_weight = w_weight[startPosX:startPosX+num_row_sensing, startPosY:startPosY+num_col_sensing]
             local_weight = resize(local_weight, (num_row_src, num_col_src))
             local_weight_coeff = local_weight.flatten()
             
-            lambda_reg = 0.002
+            lambda_reg = 0.001
             miu = 0.1
             # Define the optimization variable
             sol_c = cp.Variable(N_full_sample)
@@ -182,34 +182,34 @@ class OCTReconstruction:
             # Define the objective function
             objective = cp.Minimize(0.5 * cp.norm(PHIPSI @ sol_c - y, 2) + lambda_reg * cp.norm(cp.multiply(local_weight_coeff, sol_c), 1))
             # Define the constraints
-            constraints = [cp.norm(sol_c - dct(I_init_estimate.flatten(), norm='ortho'), 2) <= miu]  # You need to define 'some_value' or adjust this constraint as needed
+            constraints = [0.01*cp.norm(sol_c - I_init_estimate.flatten(), 2) <= miu]  # You need to define 'some_value' or adjust this constraint as needed
             # Define the problem and solve it
-            prob = cp.Problem(objective)
+            prob = cp.Problem(objective, constraints)
             result = prob.solve()
    
         else:
-            lambda_1 = 0.002
-            sol_c = cp.Variable(N_full_sample)
-            objective = cp.Minimize(lambda_1 *cp.norm(sol_c, 1) +  0.5*cp.norm(sol_c - dct(I_init_estimate.flatten(), norm='ortho'), 2))
-            prob = cp.Problem(objective)
-            constraints = [PHIPSI @ sol_c == y]
-            prob = cp.Problem(objective, constraints)
-            prob.solve()
-            # # Regularization parameter
-            # lambda_reg = 0.001
-            # miu = 0.1
-            # # Define the optimization variable
+            # lambda_1 = 0.001
             # sol_c = cp.Variable(N_full_sample)
-            # # Define the objective function
-            # objective = cp.Minimize(0.5 * cp.norm(PHIPSI @ sol_c - y, 2) + lambda_reg * cp.norm(sol_c, 1))
-            # # Define the constraints
-            # constraints = [cp.norm(sol_c - dct(I_init_estimate.flatten(), norm='ortho'), 2) <= miu]  # You need to define 'some_value' or adjust this constraint as needed
-            # # Define the problem and solve it
+            # objective = cp.Minimize(lambda_1 *cp.norm(sol_c, 1) +  0.5*cp.norm(sol_c - I_init_estimate.flatten(), 2))
             # prob = cp.Problem(objective)
-            # result = prob.solve()
+            # constraints = [PHIPSI @ sol_c == y]
+            # prob = cp.Problem(objective, constraints)
+            # prob.solve()
+            # Regularization parameter
+            lambda_reg = 0.01
+            miu = 0.1
+            # Define the optimization variable
+            sol_c = cp.Variable(N_full_sample)
+            # Define the objective function
+            objective = cp.Minimize(0.5 * cp.norm(PHIPSI @ sol_c - y, 2) + lambda_reg * cp.norm(sol_c, 1))
+            # Define the constraints
+            constraints = [0.01*cp.norm(sol_c - I_init_estimate.flatten(),2) <= miu]  # You need to define 'some_value' or adjust this constraint as needed
+            # Define the problem and solve it
+            prob = cp.Problem(objective, constraints)
+            result = prob.solve()
             
         # Apply inverse sparse basis
-        I_rec = idct(sol_c.value,norm='ortho').real
+        I_rec = sol_c.value
         I_rec_ini = np.zeros((num_row_src, num_col_src))
         I_rec_ini = np.reshape(I_rec,(num_row_src, num_col_src))
         I_rec_norm = np.clip(I_rec_ini, 0, None)
