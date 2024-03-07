@@ -176,7 +176,7 @@ class OCTReconstruction:
             local_weight = resize(local_weight, (num_row_src, num_col_src))
             local_weight_coeff = local_weight.flatten()
             
-            lambda_reg = 0.0015
+            lambda_reg = 0.02
             miu = 0.1
             # Define the optimization variable
             sol_c = cp.Variable(N_full_sample)
@@ -198,7 +198,7 @@ class OCTReconstruction:
             # # prob = cp.Problem(objective, constraints)
             # prob.solve()
             # Regularization parameter
-            lambda_reg = 0.001
+            lambda_reg = 0.002
             miu = 0.1
             # Define the optimization variable
             sol_c = cp.Variable(N_full_sample)
