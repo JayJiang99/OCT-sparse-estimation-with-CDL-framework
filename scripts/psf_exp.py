@@ -69,7 +69,6 @@ class PointSpreadFunction:
             scaled_yc = center_y * self.scale_factor 
             mask_psf_padded[int(scaled_xc), 
                             int(scaled_yc + delta_y - delta_y):int(scaled_yc + delta_y + delta_y+1)] = PSF
-                    
             mask_psf_i_2 = mask_psf_padded[delta_x:delta_x + input_image.shape[0], 
                                            delta_y:delta_y + input_image.shape[1]]
             # print("mask_psf_i_2", np.shape(mask_psf_i_2))
