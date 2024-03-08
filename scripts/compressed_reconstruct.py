@@ -119,19 +119,37 @@ class OCTReconstruction:
         num_row_src = self.recon_size
         N_full_sample = num_col_src * num_row_src
         
-        # center position should be recon_size/2 by recon_size
-        center_x, center_y = np.mgrid[0:num_row_src:1, 0:num_col_src:self.step]
-        center_x = center_x.flatten()
-        center_y = center_y.flatten()
-        delete_index = []
-        # only cares about x because y axis does not have gaussian effect
-        for i in range(len(center_y)):
-            if center_y[i] < self.radius:
-                delete_index.append(i)
-            if (center_y[i] + self.radius > num_col_src):
-                delete_index.append(i)
-        center_x = np.delete(center_x, delete_index)
-        center_y = np.delete(center_y, delete_index)
+        ## center position should be recon_size/2 by recon_size
+        # center_x, center_y = np.mgrid[0:num_row_src:1, 0:num_col_src:self.step]
+        # center_x = center_x.flatten()
+        # center_y = center_y.flatten()
+        # delete_index = []
+        # # only cares about x because y axis does not have gaussian effect
+        # for i in range(len(center_y)):
+        #     if center_y[i] < self.radius:
+        #         delete_index.append(i)
+        #     if (center_y[i] + self.radius > num_col_src):
+        #         delete_index.append(i)
+        # center_x = np.delete(center_x, delete_index)
+        # center_y = np.delete(center_y, delete_index)
+        ##
+        center_x_orig, center_y_orig = np.mgrid[0:num_row_src:1, 0:num_col_src:self.step]
+        num_col_sensing_orig = len(center_x_orig)
+        print("num_col_sensing_orig", num_col_sensing_orig)
+
+        # Create a boolean mask for conditions where points should be kept
+        mask = np.ones(center_x_orig.shape, dtype=bool)  # Start with all True (keep all)
+
+        # Update mask for conditions where points should be deleted
+        # Points too close to the left or top edge
+        mask = mask & (center_y_orig >= self.radius)
+
+        # Points too close to the right or bottom edge
+        mask = mask & ((center_y_orig + self.radius) <= num_row_src) 
+
+        # Apply the mask to center_x and center_y to filter out points, then flatten the result for further processing
+        center_x = center_x_orig[mask].flatten()
+        center_y = center_y_orig[mask].flatten()
         
         
         num_row_sensing = num_row_src
